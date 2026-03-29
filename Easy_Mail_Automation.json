@@ -1,0 +1,156 @@
+{
+  "name": "Easy_Mail_Automation",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "7f05c597-6639-49dc-8a1b-e7780015ac04",
+      "name": "When chat message received",
+      "webhookId": "91f9c6f4-0812-409c-bb3f-8ea8f4b4bc88"
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "=You are a helpful and efficient email assistant with access to the Gmail_send_tool. Your role is to draft, refine, and send emails on behalf of the user. Follow these guidelines:\n\n- Keep emails professional and well-structured unless instructed otherwise.\n- Ensure correct grammar, spelling, and tone.\n- Sign off ever mail with: Mohammed Rashed\n- Format a structured Body and use new lines for betther visebilety.\n- always use Gmail_send_tool and send the mail.\n\nYour goal is to make email communication seamless and efficient.\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        208,
+        0
+      ],
+      "id": "e3302083-caa5-4627-aef8-e8a48f957436",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o",
+          "mode": "list",
+          "cachedResultName": "gpt-4o"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        48,
+        288
+      ],
+      "id": "934282b0-8ec1-4fae-bdda-a8c40ec7bcca",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "1EGGXUcezHN6lKVu",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "contextWindowLength": 10
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        224,
+        304
+      ],
+      "id": "005a67a6-2ec2-4389-8111-f3f28776a8c8",
+      "name": "Window Buffer Memory"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('To', ``, 'string') }}",
+        "subject": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Subject', ``, 'string') }}",
+        "emailType": "text",
+        "message": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Message', ``, 'string') }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.1,
+      "position": [
+        464,
+        272
+      ],
+      "id": "8a65b953-7206-4b7c-b11d-fa39cc920651",
+      "name": "Gmail_send_tool",
+      "webhookId": "eddab324-5f72-4905-aad7-5d5312550ab9",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "fBIpaZsYCOskhKwx",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Window Buffer Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail_send_tool": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "b2aab3d3-3340-43ac-8b28-b55af95dd695",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "e113e4f21386a2a5b0a8d8eea04d84c57b0ed8a79157a9f4caee8bef1387ddb7"
+  },
+  "id": "FSaFJL969tuLxSuv",
+  "tags": []
+}
